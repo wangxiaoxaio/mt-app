@@ -1,6 +1,6 @@
 <template>
   <el-row :gutter="15" class="m-header">
-    <el-col :span="6">Geo/></el-col>
+    <el-col :span="6"><Geo/></el-col>
     <el-col :span="6">
       <div class="grid-content bg-purple" />
     </el-col>
