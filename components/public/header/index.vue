@@ -1,12 +1,12 @@
 <template>
   <el-row :gutter="15" class="m-header">
-    <el-col :span="6">
+    <el-col :span="8">
       <Geo/>
     </el-col>
-    <el-col :span="6">
+    <el-col :span="8">
       <div class="grid-content bg-purple" />
     </el-col>
-    <el-col :span="6">
+    <el-col :span="8">
       <div class="grid-content bg-purple" />
     </el-col>
   </el-row>
@@ -22,5 +22,7 @@ export default {
 </script>
 
 <style  lang="scss">
-// @import "@/assets/css/public/layout.css"
+
+@import "@/assets/css/public/layout.scss";
+
 </style>
