@@ -14,7 +14,7 @@
     <section>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="昵称" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+          <el-input v-model="ruleForm.name"></el-input><el-button >删除</el-button>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="ruleForm.email"></el-input>
@@ -36,6 +36,9 @@
         </el-form-item>
         <el-form-item>
           <a href="http://www.meituan.com/about/terms" class="f1" target="_blank">《美团用户协议》</a>
+        </el-form-item>
+        <el-form-item>
+           <el-input ></el-input><el-button >删除</el-button>
         </el-form-item>
       </el-form>
     </section>
