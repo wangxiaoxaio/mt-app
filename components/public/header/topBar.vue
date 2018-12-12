@@ -1,7 +1,5 @@
 <template>
-  <el-row
-    :gutter="0"
-    class="m-header">
+  <el-row :gutter="0" class="m-header">
     <el-col :span="5">
       <Geo/>
     </el-col>
@@ -16,19 +14,18 @@
 
 <script>
 import Geo from "./geo.vue";
-import User from './user.vue'
-import Nav from './nav.vue'
+import User from "./user.vue";
+import Nav from "./nav.vue";
 
 export default {
   components: {
     Geo,
     User,
-    Nav,
+    Nav
   }
 };
 </script>
 
 <style  lang="scss">
 @import "@/assets/css/public/layout.scss";
-
 </style>
