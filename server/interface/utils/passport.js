@@ -1,6 +1,6 @@
 import passport from "koa-passport";
 import LocalStrategy from "passport-local";
-import User from "../dbs/models/user";
+import User from "../../dbs/models/user";
 
 passport.use(
   new LocalStrategy(async function(username, password, done) {
@@ -23,7 +23,7 @@ passport.serializeUser(function(user, done) {
   done(null, user);
 });
 passport.deserializeUser(function(user, done) {
-  done(null, user);
+  return done(null, user);
 });
 
 export default passport;

@@ -1,4 +1,4 @@
-const Koa = require("koa");
+import Koa from "koa";
 const consola = require("consola");
 const { Nuxt, Builder } = require("nuxt");
 
@@ -6,6 +6,37 @@ const app = new Koa();
 const host = process.env.HOST || "127.0.0.1";
 const port = process.env.PORT || 3000;
 
+import mongoose from "mongoose";
+import session from "koa-generic-session";
+import Redis from "koa-redis";
+import json from "koa-json";
+import dbConfig from "./dbs/config";
+import passport from "./interface/utils/passport";
+import user from "./interface/user";
+import bodyParser from "koa-bodyparser";
+
+app.keys = ["mt", "keyskeys"];
+app.proxy = true;
+app.use(
+  session({
+    key: "mt",
+    prefix: "mt:uid",
+    store: new Redis()
+  })
+);
+app.use(
+  bodyParser({
+    extendTypes: ["text", "form", "json"]
+  })
+);
+app.use(json());
+
+mongoose.connect(
+  dbConfig.dbs,
+  { useNewUrlParser: true }
+);
+app.use(passport.initialize());
+app.use(passport.session());
 // Import and Set Nuxt.js options
 let config = require("../nuxt.config.js");
 config.dev = !(app.env === "production");
@@ -20,6 +51,7 @@ async function start() {
     await builder.build();
   }
 
+  app.use(user.routes()).use(user.allowedMethods());
   app.use(ctx => {
     ctx.status = 200; // koa defaults to 404 when it sees that status is unset
 

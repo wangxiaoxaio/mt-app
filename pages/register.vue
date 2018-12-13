@@ -44,18 +44,8 @@
         <el-form-item>
           <a class="f1" href="http://www.meituan.com/about/terms" target="_blank">《美团网用户协议》</a>
         </el-form-item>
-        <el-form-item>
-          <el-input/>
-          <el-button>删除</el-button>
-        </el-form-item>
       </el-form>
     </section>
-    <el-form label-width="100px">
-      <el-form-item style="width:600px;">
-        <el-input style="width:300px"/>
-        <el-button>shanchu</el-button>
-      </el-form-item>
-    </el-form>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 export default {
-  dbs: "mongoodb://127.0.0.1:27011",
+  dbs: "mongodb://127.0.0.1:27017/student",
   redis: {
     get host() {
       return "127.0.0.1";
@@ -13,10 +13,10 @@ export default {
       return "smtp.qq.com";
     },
     get user() {
-      return "**@qq.com";
+      return "1532168980@qq.com";
     },
     get pass() {
-      return "";
+      return "buus cnfm jzph hfib";
     },
     get code() {
       return () =>
@@ -27,7 +27,7 @@ export default {
     },
     get expire() {
       return () => {
-        return new Date().getTime() + 60 * 1000;
+        return new Date().getTime() + 60 * 60 * 1000;
       };
     }
   }

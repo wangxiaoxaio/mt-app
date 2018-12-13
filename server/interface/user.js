@@ -1,11 +1,10 @@
 import Router from "koa-router";
 import Redis from "koa-redis";
-import axios from "./utils/axios";
-import Passport from "./utils/passport";
-import User from "../dbs/models/user";
-import Email from "../dbs/config";
 import nodeMailer from "nodemailer";
-import { EACCES } from "constants";
+import User from "../dbs/models/user";
+import Passport from "./utils/passport";
+import Email from "../dbs/config";
+import axios from "./utils/axios";
 
 let router = new Router({
   prefix: "/user/"
@@ -13,7 +12,7 @@ let router = new Router({
 
 let Store = new Redis().client;
 
-router.post("/signup", async ctx => {
+router.post("/signup", async (ctx, next) => {
   let { username, password, email, code } = ctx.request.body;
   if (code) {
     const saveCode = await Store.hget(`nodemail:${username}`, "code");
@@ -83,6 +82,7 @@ router.post("/signin", async (ctx, next) => {
           msg: "登录成功",
           user
         };
+        return ctx.login(user);
       } else {
         ctx.body = {
           code: 1,
@@ -104,7 +104,9 @@ router.post("/verify", async (ctx, next) => {
     return false;
   }
   let transporter = nodeMailer.createTransport({
-    service: "qq",
+    host: Email.smtp.host,
+    port: 587,
+    secure: false,
     auth: {
       user: Email.smtp.user,
       pass: Email.smtp.pass
@@ -113,7 +115,8 @@ router.post("/verify", async (ctx, next) => {
   let ko = {
     code: Email.smtp.code(),
     expire: Email.smtp.expire(),
-    email: ctx.request.body.email
+    email: ctx.request.body.email,
+    user: ctx.request.body.username
   };
   let mailOptions = {
     from: `"认证邮件" <${Email.smtp.user}>`,
@@ -125,7 +128,15 @@ router.post("/verify", async (ctx, next) => {
     if (error) {
       return console.log(error);
     } else {
-      Store.hmset(`nodemail:${ko.user}`, "code", ko.code, "expire", ko.expire);
+      Store.hmset(
+        `nodemail:${ko.user}`,
+        "code",
+        ko.code,
+        "expire",
+        ko.expire,
+        "email",
+        ka.email
+      );
     }
   });
   ctx.body = {
@@ -149,7 +160,7 @@ router.get("/exit", async (ctx, next) => {
 
 router.get("/getUser", async ctx => {
   if (ctx.isAuthenticated()) {
-    const { username, email } = ctx.session.Passport.user;
+    const { username, email } = ctx.session.passport.user;
     ctx.body = {
       user: username,
       email
