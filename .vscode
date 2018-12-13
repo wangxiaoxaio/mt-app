@@ -1,0 +1,22 @@
+{
+    "editor.fontSize": 16,
+    "http.proxy": "http://127.0.0.1:8123",
+    "http.proxyStrictSSL": true,
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        {
+            "language": "html",
+            "autoFix": true
+        },
+        {
+            "language": "vue",
+            "autoFix": true
+        }
+    ],
+    "files.autoSave": "off",
+    "workbench.iconTheme": "material-icon-theme",
+    "sync.gist": "7e222d4ed4664515f798ae824d1294fa"
+
+}
