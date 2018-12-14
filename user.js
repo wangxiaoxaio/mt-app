@@ -6,13 +6,14 @@ import Passport from "./utils/passport";
 import Email from "../dbs/config";
 import axios from "./utils/axios";
 
-let router = new Router({ prefix: "/user" });
+let router = new Router({
+  prefix: "/user"
+});
 
 let Store = new Redis().client;
 
-router.post("/signup", async ctx => {
-  const { username, password, email, code } = ctx.request.body;
-
+router.post("/signup", async (ctx, next) => {
+  let { username, password, email, code } = ctx.request.body;
   if (code) {
     const saveCode = await Store.hget(`nodemail:${username}`, "code");
     const saveExpire = await Store.hget(`nodemail:${username}`, "expire");
@@ -29,14 +30,12 @@ router.post("/signup", async ctx => {
         code: -1,
         msg: "请填写正确的验证码"
       };
-      return false;
     }
   } else {
     ctx.body = {
       code: -1,
       msg: "请填写验证码"
     };
-    return false;
   }
   let user = await User.find({ username });
   if (user.length) {
@@ -46,31 +45,27 @@ router.post("/signup", async ctx => {
     };
     return;
   }
-  let nuser = await User.create({ username, password, email });
-  ctx.body = {
-    code: 0,
-    msg: "注册成功"
-  };
-  // if (nuser) {
-  //   let res = await axios.post("/user/signin", { username, password });
-  //   if (res.data && res.data.code === 0) {
-  //     ctx.body = {
-  //       code: 0,
-  //       msg: "注册成功",
-  //       user: res.data.user
-  //     };
-  //   } else {
-  //     ctx.body = {
-  //       code: -1,
-  //       msg: "error"
-  //     };
-  //   }
-  // } else {
-  //   ctx.body = {
-  //     code: -1,
-  //     msg: "注册失败"
-  //   };
-  // }
+  let new_user = await User.create({ username, password, email });
+  if (new_user) {
+    let res = await axios.post("/users/signin", { username, password, email });
+    if (res.data && res.data.code === 0) {
+      ctx.body = {
+        code: 0,
+        msg: "注册成功",
+        user: res.data.user
+      };
+    } else {
+      ctx.body = {
+        code: -1,
+        msg: "error"
+      };
+    }
+  } else {
+    ctx.body = {
+      code: -1,
+      msg: "注册失败"
+    };
+  }
 });
 
 router.post("/signin", async (ctx, next) => {
@@ -101,11 +96,10 @@ router.post("/signin", async (ctx, next) => {
 router.post("/verify", async (ctx, next) => {
   let username = ctx.request.body.username;
   const saveExpire = await Store.hget(`nodemail:${username}`, "expire");
-  // console.log("saveExpire", saveExpire);
   if (saveExpire && new Date().getTime() - saveExpire < 0) {
     ctx.body = {
       code: -1,
-      msg: "验证请求过于频繁，1分钟内1次"
+      msg: "验证请求过于频繁，一分钟一次"
     };
     return false;
   }
@@ -127,8 +121,8 @@ router.post("/verify", async (ctx, next) => {
   let mailOptions = {
     from: `"认证邮件" <${Email.smtp.user}>`,
     to: ko.email,
-    subject: "《慕课网高仿美团网全栈实战》注册码",
-    html: `您在《慕课网高仿美团网全栈实战》课程中注册，您的邀请码是${ko.code}`
+    subject: "注册码",
+    html: `您的注册码为${ko.code}`
   };
   await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -141,13 +135,13 @@ router.post("/verify", async (ctx, next) => {
         "expire",
         ko.expire,
         "email",
-        ko.email
+        ka.email
       );
     }
   });
   ctx.body = {
     code: 0,
-    msg: "验证码已发送，可能会有延时，有效期1分钟"
+    msg: "验证码已发送，有效期为一分钟"
   };
 });
 

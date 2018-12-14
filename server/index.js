@@ -35,6 +35,7 @@ mongoose.connect(
   dbConfig.dbs,
   { useNewUrlParser: true }
 );
+mongoose.set("useCreateIndex", true);
 app.use(passport.initialize());
 app.use(passport.session());
 // Import and Set Nuxt.js options

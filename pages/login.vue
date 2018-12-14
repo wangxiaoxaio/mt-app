@@ -48,7 +48,7 @@ export default {
     login: function() {
       let self = this;
       self.$axios
-        .post("/users/signin", {
+        .post("/user/signin", {
           username: window.encodeURIComponent(self.username),
           password: CryptoJS.MD5(self.password).toString()
         })
@@ -57,6 +57,7 @@ export default {
             if (data && data.code === 0) {
               location.href = "/";
             } else {
+              console.log(data.msg);
               self.error = data.msg;
             }
           } else {

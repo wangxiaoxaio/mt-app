@@ -7,7 +7,7 @@ passport.use(
     let where = {
       username
     };
-    let result = User.findOne(where);
+    let result = await User.findOne(where);
     if (result !== null) {
       if (result.password === password) {
         return done(null, result);
