@@ -13,6 +13,7 @@ import json from "koa-json";
 import dbConfig from "./dbs/config";
 import passport from "./interface/utils/passport";
 import user from "./interface/user";
+import geo from "./interface/geo";
 import bodyParser from "koa-bodyparser";
 
 app.keys = ["mt", "keyskeys"];
@@ -53,6 +54,7 @@ async function start() {
   }
 
   app.use(user.routes()).use(user.allowedMethods());
+  app.use(geo.routes()).use(geo.allowedMethods());
   app.use(ctx => {
     ctx.status = 200; // koa defaults to 404 when it sees that status is unset
 
