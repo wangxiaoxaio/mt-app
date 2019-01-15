@@ -22,10 +22,6 @@
           </dl>
           <dl v-if="isSearchList" class="searchList">
             <dd v-for="(value,idx) in searchList" :key="idx">{{ value }}</dd>
-            <dd>电网</dd>
-            <dd>电网</dd>
-            <dd>电网</dd>
-            <dd>电网</dd>
           </dl>
         </div>
         <p class="suggest">
@@ -79,7 +75,7 @@ export default {
       isFocus: false,
       search: "",
       hotPlaces: ["谷歌", "谷歌", "谷歌", "谷歌"],
-      searchList: ["大道朝天"]
+      searchList: ["大道朝天", "google"]
     };
   },
   computed: {

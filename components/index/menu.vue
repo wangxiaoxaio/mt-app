@@ -1,8 +1,8 @@
 <template>
   <div class="m-menu">
-    <dl class="nav">
+    <dl class="nav" @mouseleave="leave">
       <dt>全部分类</dt>
-      <dd v-for="(item,idx) in menu" :key="idx" @mouseenter="enter" @mouseleave="leave">
+      <dd v-for="(item,idx) in $store.state.home.menu" :key="idx" @mouseenter="enter" >
         <i :class="item.type"/>
         {{ item.name }}
         <span class="arrow"/>
@@ -58,7 +58,9 @@ export default {
   },
   computed: {
     curDetail() {
-      return this.menu.filter(item => item.type === this.kind)[0];
+      return this.$store.state.home.menu.filter(
+        item => item.type === this.kind
+      )[0];
     }
   },
   methods: {
@@ -66,9 +68,10 @@ export default {
       this.kind = e.target.querySelector("i").className;
     },
     leave() {
-      this._timer = setTimeout(() => {
-        this.kind = "";
-      }, 1500);
+      let self = this;
+      self._timer = setTimeout(function() {
+        self.kind = "";
+      }, 100);
     },
     sover() {
       clearTimeout(this._timer);
