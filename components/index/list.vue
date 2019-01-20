@@ -2,21 +2,22 @@
   <section class="m-istyle">
     <dl>
       <dt>有格调</dt>
-      <dd :class="{active:kind==='all'}" kind="all" keyword="景点" @mouseenter="enter">全部</dd>
-      <dd :class="{active:kind==='part'}" kind="part" keyword="美食" @mouseenter="enter">约会聚餐</dd>
-      <dd :class="{active:kind==='spa'}" kind="spa" keyword="丽人" @mouseenter="enter">丽人SPA</dd>
-      <dd :class="{active:kind==='movie'}" kind="movie" keyword="电影" @mouseenter="enter">电影演出</dd>
-      <dd :class="{active:kind==='travel'}" kind="travel" keyword="旅游" @mouseenter="enter">品质出游</dd>
+      <dd :class="{active:kind==='all'}" kind="all" keyword="景点" @mouseenter="over">全部</dd>
+      <dd :class="{active:kind==='part'}" kind="part" keyword="美食" @mouseenter="over">约会聚餐</dd>
+      <dd :class="{active:kind==='spa'}" kind="spa" keyword="丽人" @mouseenter="over">丽人SPA</dd>
+      <dd :class="{active:kind==='movie'}" kind="movie" keyword="电影" @mouseenter="over">电影演出</dd>
+      <dd :class="{active:kind==='travel'}" kind="travel" keyword="旅游" @mouseenter="over">品质出游</dd>
     </dl>
-    <transition appear>
-      <ul class="ibody">
+    <transition appear
+    >
+      <ul class="ibody" >
         <li v-for="(item,idx) in cur" :key="idx">
           <el-card :body-style="{padding:'0px'}" shadow="never">
             <img :src="item.img" class="image" alt>
             <ul class="cbody">
               <li class="title">{{ item.title }}</li>
-              <li class="pos">{{ item.pos }}</li>
-              <li class="price">{{ item.price }}</li>
+              <li class="pos"><span>{{ item.pos }}</span></li>
+              <li class="price">￥<em>{{ item.price }}</em></li>
             </ul>
           </el-card>
         </li>
@@ -29,81 +30,14 @@
 export default {
   data() {
     return {
+      loading2: true,
       kind: "all",
       list: {
-        all: [
-          {
-            img:
-              "//p0.meituan.net/msmerchant/d2059b07f199484680d32e829b780d9756730.jpg@368w_208h_1e_1c",
-            title: "分米鸡 DM Chicken（合景·摩方店)",
-            pos: "分米鸡10DM套餐1份，有赠品",
-            price: 398
-          },
-          {
-            img:
-              "//p1.meituan.net/msmerchant/8071fc2511131749b6aa47c8b1487f08194991.jpg@368w_208h_1e_1c",
-            title: "COSTA COFFEE（王府井）",
-            pos: "玫瑰黑巧茶拿铁1份",
-            price: 11
-          },
-          {
-            img:
-              "//p1.meituan.net/wedding/8f9b0c8dac41fe65ad9d8a0a10455f7893928.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c",
-            title: "子时·TATTOO",
-            pos: "子时·TATTOO",
-            price: 875
-          },
-          {
-            img:
-              "//p0.meituan.net/poi/ec9127ac73d519016c1f55a5cbfe4014566042.png@368w_208h_1e_1c",
-            title: "青春光线电影院",
-            pos: "免押金,儿童票,有WIFI,4K厅,60帧厅",
-            price: 19.9
-          },
-          {
-            img:
-              "//p1.meituan.net/tdchotel/a82bd59342a2fcab8f9768f95e667457270498.jpg@368w_208h_1e_1c",
-            title: "正义路酒店",
-            pos: "新客超值优惠",
-            price: 343
-          }
-        ],
-        part: [
-          {
-            img:
-              "//p1.meituan.net/msmerchant/8071fc2511131749b6aa47c8b1487f08194991.jpg@368w_208h_1e_1c",
-            title: "COSTA COFFEE（王府井）",
-            pos: "玫瑰黑巧茶拿铁1份",
-            price: 11
-          }
-        ],
-        spa: [
-          {
-            img:
-              "//p1.meituan.net/wedding/8f9b0c8dac41fe65ad9d8a0a10455f7893928.jpg@240w_180h_1e_1c_1l|watermark=1&&r=2&p=9&x=2&y=2&relative=1&o=20|368w_208h_1e_1c",
-            title: "子时·TATTOO",
-            pos: "子时·TATTOO",
-            price: 875
-          }
-        ],
-        movie: [
-          {
-            img:
-              "//p0.meituan.net/poi/ec9127ac73d519016c1f55a5cbfe4014566042.png@368w_208h_1e_1c",
-            title: "青春光线电影院",
-            pos: "免押金,儿童票,有WIFI,4K厅,60帧厅",
-            price: 19.9
-          }
-        ],
-        travel: [
-          {
-            img:
-              "//p1.meituan.net/tdchotel/a82bd59342a2fcab8f9768f95e667457270498.jpg@368w_208h_1e_1c",
-            title: "正义路酒店",
-            pos: "新客超值优惠",
-            price: 343
-          }
-        ]
+        all: [],
+        part: [],
+        spa: [],
+        movie: [],
+        travel: []
       }
     };
   },
@@ -112,9 +46,72 @@ export default {
       return this.list[this.kind];
     }
   },
+  async mounted() {
+    let self = this;
+    let {
+      status,
+      data: { count, pois }
+    } = await self.$axios.get(
+      `http://localhost:3000/search/resultsByKeywords`,
+      {
+        params: {
+          keyword: "景点",
+          city: self.$store.state.geo.position.city
+        }
+      }
+    );
+    if (status === 200 && count > 0) {
+      let r = pois.filter(item => item.photos.length).map(item => {
+        return {
+          title: item.name,
+          pos: item.type.split(";")[0],
+          price: item.biz_ext.cost || "暂无",
+          img: item.photos[0].url,
+          url: "//abc.com"
+        };
+      });
+      self.list[self.kind] = r.slice(0, 12);
+    } else {
+      self.list[self.kind] = [];
+    }
+  },
   methods: {
-    enter(e) {
-      this.kind = e.target.getAttribute("kind");
+    over: async function(e) {
+      let dom = e.target;
+      let tag = dom.tagName.toLowerCase();
+      let self = this;
+      if (tag === "dd") {
+        this.kind = dom.getAttribute("kind");
+        let keyword = dom.getAttribute("keyword");
+        var loading = self.$loading({ target: dom });
+        let {
+          status,
+          data: { count, pois }
+        } = await self.$axios.get(
+          `http://localhost:3000/search/resultsByKeywords`,
+          {
+            params: {
+              keyword,
+              city: self.$store.state.geo.position.city
+            }
+          }
+        );
+        if (status === 200 && count > 0) {
+          loading.close();
+          let r = pois.filter(item => item.photos.length).map(item => {
+            return {
+              title: item.name,
+              pos: item.type.split(";")[0],
+              price: item.biz_ext.cost || "暂无",
+              img: item.photos[0].url,
+              url: "//abc.com"
+            };
+          });
+          self.list[self.kind] = r.slice(0, 12);
+        } else {
+          self.list[self.kind] = [];
+        }
+      }
     }
   }
 };

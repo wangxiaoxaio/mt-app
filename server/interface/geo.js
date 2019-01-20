@@ -88,7 +88,7 @@ router.get("/hotCity", async ctx => {
   let {
     status,
     data: { hots }
-  } = await axios.get(`http:?/cp-tools.cn/geo/hotCity?sign=${sign}`);
+  } = await axios.get(`http://cp-tools.cn/geo/hotCity?sign=${sign}`);
   if (status === 200) {
     ctx.body = {
       hots

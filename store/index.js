@@ -16,7 +16,7 @@ const store = () =>
         const {
           status,
           data: { province, city }
-        } = await app.$axios(`http://localhost:3000/geo/getPosition`);
+        } = await app.$axios.get(`http://localhost:3000/geo/getPosition`);
         commit(
           "geo/setPosition",
           status === 200 ? { province, city } : { province: "", city: "" }
@@ -24,8 +24,17 @@ const store = () =>
         const {
           status: status2,
           data: { menu }
-        } = await app.$axios(`http://localhost:3000/geo/menu`);
+        } = await app.$axios.get(`http://localhost:3000/geo/menu`);
         commit("home/setMenu", status2 === 200 ? menu : []);
+        const {
+          status: status3,
+          data: { result }
+        } = await app.$axios.get(`http://localhost:3000/search/hotPlace`, {
+          params: {
+            city: app.store.state.geo.position.city.replace("市", "")
+          }
+        });
+        commit("home/setHotPlace", status3 === 200 ? result : []);
       }
     }
   });
