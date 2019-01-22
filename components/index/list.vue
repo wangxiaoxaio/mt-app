@@ -30,7 +30,6 @@
 export default {
   data() {
     return {
-      loading2: true,
       kind: "all",
       list: {
         all: [],
@@ -57,6 +56,7 @@ export default {
         params: {
           keyword: "景点",
           city: self.$store.state.geo.position.city
+          // city: "郑州"
         }
       }
     );
@@ -83,7 +83,6 @@ export default {
       if (tag === "dd") {
         this.kind = dom.getAttribute("kind");
         let keyword = dom.getAttribute("keyword");
-        var loading = self.$loading({ target: dom });
         let {
           status,
           data: { count, pois }
@@ -97,7 +96,6 @@ export default {
           }
         );
         if (status === 200 && count > 0) {
-          loading.close();
           let r = pois.filter(item => item.photos.length).map(item => {
             return {
               title: item.name,

@@ -1,7 +1,5 @@
 import Router from "koa-router";
 import axios from "./utils/axios";
-import { Z_DEFAULT_STRATEGY } from "zlib";
-import { stat } from "fs";
 
 const router = new Router({
   prefix: "/search"
@@ -47,7 +45,7 @@ router.get("/resultsByKeywords", async ctx => {
     data: { count, pois }
   } = await axios.get(`http://cp-tools.cn/search/resultsByKeywords`, {
     params: {
-      city,
+      city: city.replace("市", ""),
       keyword,
       sign
     }

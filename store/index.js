@@ -13,14 +13,18 @@ const store = () =>
     },
     actions: {
       async nuxtServerInit({ commit }, { req, app }) {
-        const {
-          status,
-          data: { province, city }
-        } = await app.$axios.get(`http://localhost:3000/geo/getPosition`);
-        commit(
-          "geo/setPosition",
-          status === 200 ? { province, city } : { province: "", city: "" }
-        );
+        if (app.store.state.geo.position === []) {
+        } else {
+          const {
+            status,
+            data: { province, city }
+          } = await app.$axios.get(`http://localhost:3000/geo/getPosition`);
+          commit(
+            "geo/setPosition",
+            status === 200 ? { province, city } : { province: "", city: "" }
+          );
+        }
+
         const {
           status: status2,
           data: { menu }

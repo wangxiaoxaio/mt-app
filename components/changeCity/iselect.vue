@@ -72,8 +72,8 @@ export default {
   },
   methods: {
     handleSelect(item) {
+      this.$store.commit("geo/setPosition", { city: item.value });
       location.href = "/";
-      this.$store.dispatch("geo/setPosition", { city: item.value });
       console.log(item.value);
     },
     querySearchAsync: _.debounce(async function(query, cb) {
