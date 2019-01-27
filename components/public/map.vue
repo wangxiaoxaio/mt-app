@@ -1,6 +1,8 @@
 <template>
-  <div :id="id"
-       :style="{width:width+'px',height:height+'px',margin:'34px auto'}" class="m-map"/>
+  <div
+    :id="id"
+    :style="{width:width+'px',height:height+'px',margin:'34px auto'}"
+    class="m-map"/>
 </template>
 
 <script>
@@ -23,7 +25,7 @@ export default {
   },
   data() {
     return {
-      id: `map`,
+      id: `mt-app`,
       key: "666a3a2d66c9b10e91a0994b32e34574"
     };
   },
@@ -38,7 +40,8 @@ export default {
     self.id = `map${Math.random()
       .toString()
       .slice(4, 6)}`;
-    window.onload = () => {
+
+    window.onmaploaded = () => {
       let map = new window.AMap.Map(self.id, {
         resizeEnable: true,
         zoom: 11,
@@ -58,7 +61,7 @@ export default {
     };
     const url = `https://webapi.amap.com/maps?v=1.4.10&key=${
       self.key
-    }&callback=onloaded`;
+    }&callback=onmaploaded`;
     let jsapi = document.createElement("script");
     jsapi.charset = "utf-8";
     jsapi.src = url;

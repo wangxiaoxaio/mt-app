@@ -3,14 +3,23 @@
     <dl class="classic">
       <dt>分类</dt>
       <dt>全部</dt>
-      <dd v-for="(item,idx) in types" :key="idx">
-      <iselect :name="item.types" :list="item.modules"/></dd>
+      <dd
+        v-for="(item,idx) in types"
+        :key="idx">
+        <iselect
+          :name="item.type"
+          :list="item.module"/>
+      </dd>
     </dl>
     <dl class="classic">
       <dt>分类</dt>
       <dt>全部</dt>
-      <dd v-for="(item,idx) in areas" :key="idx">
-        <iselect :name="item.types" :list="item.modules"/>
+      <dd
+        v-for="(item,idx) in areas"
+        :key="idx">
+        <iselect
+          :name="item.type"
+          :list="item.module"/>
       </dd>
     </dl>
   </div>
@@ -18,7 +27,6 @@
 
 <script>
 import iselect from "./iselect.vue";
-import { Array } from "core-js";
 export default {
   components: {
     iselect
@@ -58,8 +66,9 @@ export default {
     width: 80px;
     &:nth-child(2) {
       border-radius: 100px;
-      background: #12d1be;
+      background: #13d1be;
       color: #fff;
+      height: 22px;
       line-height: 22px;
       width: 40px;
       box-sizing: border-box;

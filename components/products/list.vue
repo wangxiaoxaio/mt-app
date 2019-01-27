@@ -1,16 +1,25 @@
 <template>
-  <div class="m-product-list">
+  <div class="m-products-list">
     <dl>
-      <dd v-for="item in nav" :key="item.name" :class="[item.name,item.active?'s-nav-active':'']" @click="navSelect">{{ item.txt }}</dd>
+      <dd
+        v-for="item in nav"
+        :key="item.name"
+        :class="[item.name,item.active?'s-nav-active':'']"
+        @click="navSelect"
+      >{{ item.txt }}</dd>
     </dl>
     <ul>
-      <Item v-for="(item,idx) in list" :key="idx" :meta="item"/>
-  </ul></div>
+      <Item
+        v-for="(item,idx) in list"
+        :key="idx"
+        :meta="item" @click="$emit('change-point',(100,100))"/>
+    </ul>
+  </div>
 </template>
 
 <script>
 import Item from "./product.vue";
-import { Object, Array } from "core-js";
+import _ from "lodash";
 export default {
   components: {
     Item
@@ -49,8 +58,34 @@ export default {
       ]
     };
   },
+  async asyncData({ app }) {
+    let { data } = await app.$axios.get("searchList");
+    return { items: data.list };
+  },
   methods: {
-    navSelect() {}
+    navSelect: function(e) {
+      let dom = e.target;
+      let text = dom.innerHTML;
+      let name;
+
+      for (let x of this.nav) {
+        if (x.txt == text) {
+          x.active = true;
+          name = x.name;
+        } else {
+          x.active = false;
+        }
+      }
+      if (name === "s-price") {
+        this.list = this.list.sort((a, b) => a.price - b.price);
+      } else if (name === "s-visit") {
+        this.list = this.list.sort((a, b) => a.comment - b.comment);
+      } else if (name === "s-comment") {
+        this.list = this.list.sort((a, b) => a.rate - b.rate);
+      } else {
+        this.list = this.list.sort((a, b) => a.default - b.default);
+      }
+    }
   }
 };
 </script>

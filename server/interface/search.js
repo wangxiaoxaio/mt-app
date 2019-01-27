@@ -1,5 +1,6 @@
 import Router from "koa-router";
 import axios from "./utils/axios";
+import { stat } from "fs";
 
 const router = new Router({
   prefix: "/search"
@@ -45,7 +46,7 @@ router.get("/resultsByKeywords", async ctx => {
     data: { count, pois }
   } = await axios.get(`http://cp-tools.cn/search/resultsByKeywords`, {
     params: {
-      city: city.replace("市", ""),
+      city: city,
       keyword,
       sign
     }
@@ -54,6 +55,35 @@ router.get("/resultsByKeywords", async ctx => {
     count: status === 200 ? count : 0,
     pois: status === 200 ? pois : []
   };
+});
+
+router.get("/products", async ctx => {
+  console.log(ctx.isAuthenticated());
+  let keyword = ctx.query.keyword || "旅游";
+  let city = ctx.query.city || "天津";
+  let {
+    status,
+    data: { product, more }
+  } = await axios.get("http://cp-tools.cn/search/products", {
+    params: {
+      keyword,
+      city,
+      sign
+    }
+  });
+  if (status === 200) {
+    ctx.body = {
+      product,
+      more: ctx.isAuthenticated() ? more : [],
+      login: ctx.isAuthenticated()
+    };
+  } else {
+    ctx.body = {
+      product: {},
+      more: ctx.isAuthenticated() ? more : [],
+      login: ctx.isAuthenticated()
+    };
+  }
 });
 
 export default router;
